@@ -1,0 +1,14 @@
+# binaries
+kubectl
+eksctl*
+*.tar.gz
+
+# terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# OS files
+.DS_Store
+
+

@@ -1,0 +1,12 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: expense-v2
+  region: us-east-1
+
+nodeGroups:
+  - name: expense-dev
+    instanceType: t3.medium
+    desiredCapacity: 2
+
