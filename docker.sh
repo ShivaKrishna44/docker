@@ -1,6 +1,7 @@
 #!/bin/bash
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
+INSTALL_DIR="/usr/local/bin"
 
 growpart /dev/nvme0n1 4
 lvextend -l +50%FREE /dev/RootVG/rootVol
@@ -32,14 +33,22 @@ sudo mv -f eksctl /usr/local/bin/eksctl
 
 rm -f eksctl_${PLATFORM}.tar.gz
 
-echo "eksctl installed at:"
-/usr/local/bin/eksctl version
+echo "eksctl installed:"
+$INSTALL_DIR/eksctl version
 
 
-echo "Verifying PATH..."
-echo $PATH=$PATH:/usr/local/bin
-eksctl version
+eecho "===== Ensuring PATH contains /usr/local/bin ====="
 
+if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
+    echo "export PATH=\$PATH:$INSTALL_DIR" >> /etc/profile
+    export PATH=$PATH:$INSTALL_DIR
+fi
+
+echo "PATH is now:"
+echo $PATH
+
+echo "Final verification:"
+which eksctl || echo "Use full path: $INSTALL_DIR/eksctl"
 
 
 #eksctl
