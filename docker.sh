@@ -28,7 +28,7 @@ curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$
 tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp
 
 chmod +x eksctl
-sudo mv eksctl /usr/local/bin/
+sudo mv eksctl /usr/local/bin/eksctl
 
 rm -f eksctl_${PLATFORM}.tar.gz
 
