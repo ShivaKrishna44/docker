@@ -1,7 +1,6 @@
 #!/bin/bash
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
-INSTALL_DIR="/usr/local/bin"
 
 growpart /dev/nvme0n1 4
 lvextend -l +50%FREE /dev/RootVG/rootVol
@@ -16,56 +15,16 @@ systemctl start docker
 systemctl enable docker
 usermod -aG docker ec2-user
 
-echo "Downloading kubectl..."
-curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.0/2024-12-20/bin/linux/amd64/kubectl
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-
-echo "kubectl installed at:"
-/usr/local/bin/kubectl version --client
-
-echo "Downloading eksctl..."
-curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
-tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp
-
-chmod +x eksctl
-sudo mv -f eksctl /usr/local/bin/eksctl
-
-rm -f eksctl_${PLATFORM}.tar.gz
-
-echo "eksctl installed:"
-$INSTALL_DIR/eksctl version
-
-
-eecho "===== Ensuring PATH contains /usr/local/bin ====="
-
-if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
-    echo "export PATH=\$PATH:$INSTALL_DIR" >> /etc/profile
-    export PATH=$PATH:$INSTALL_DIR
-fi
-
-echo "PATH is now:"
-echo $PATH
-
-echo "Final verification:"
-which eksctl || echo "Use full path: $INSTALL_DIR/eksctl"
-
-echo "cluster is now start creating:"
-
-/usr/local/bin/eksctl create cluster --config-file=eks.yaml
-
+#kubectl installation
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.0/2024-12-20/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mv kubectl /usr/local/bin/kubectl
 
 #eksctl
-# eksctl installation
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+mv /tmp/eksctl /usr/local/bin
 
-#echo "Downloading eksctl..."
-#curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
-#tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp
-
-#rm -f eksctl_${PLATFORM}.tar.gz
-
-#chmod +x /tmp/eksctl
-#sudo mv /tmp/eksctl /usr/local/bin/eksctl
-
-#echo "eksctl installed:"
-#/usr/local/bin/eksctl version
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
