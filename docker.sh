@@ -50,6 +50,10 @@ echo $PATH
 echo "Final verification:"
 which eksctl || echo "Use full path: $INSTALL_DIR/eksctl"
 
+echo "cluster is now start creating:"
+
+/usr/local/bin/eksctl create cluster --config-file=eks.yaml
+
 
 #eksctl
 # eksctl installation
