@@ -24,16 +24,21 @@ echo "kubectl installed at:"
 /usr/local/bin/kubectl version --client
 
 echo "Downloading eksctl..."
-curl -sLO https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz
-tar -xzf eksctl_Linux_amd64.tar.gz
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
+tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp
 
 chmod +x eksctl
 sudo mv eksctl /usr/local/bin/
 
-rm eksctl_Linux_amd64.tar.gz
+rm -f eksctl_${PLATFORM}.tar.gz
 
 echo "eksctl installed at:"
 /usr/local/bin/eksctl version
+
+
+echo "Verifying PATH..."
+echo $PATH
+which eksctl || echo "eksctl not in PATH yet (new login required)"
 
 
 #eksctl
@@ -41,8 +46,8 @@ echo "eksctl installed at:"
 
 #echo "Downloading eksctl..."
 #curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
-
 #tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp
+
 #rm -f eksctl_${PLATFORM}.tar.gz
 
 #chmod +x /tmp/eksctl
